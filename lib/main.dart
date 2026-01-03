@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart'; // Ana ekranı buradan çağırıyoruz
+import 'screens/home_screen.dart';
+import 'services/notification_service.dart';
+// Timezone paketini buraya da ekle
+import 'package:timezone/data/latest.dart' as tz;
 
-void main() {
-  runApp(const SubscriptionApp());
-}
-
-class SubscriptionApp extends StatelessWidget {
-  const SubscriptionApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Abonelik Detoksu',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.green,
-      ),
-      home: const HomeScreen(),
-    );
-  }
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // 1. Zaman dilimlerini yükle (Kritik nokta burası)
+  tz.initializeTimeZones();
+  
+  // 2. Bildirim servisini başlat
+  await NotificationService.init();
+  
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: HomeScreen(),
+  ));
 }
